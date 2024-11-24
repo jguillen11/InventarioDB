@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\jg194\\source\\repos\\ProyectoFinal\\ProyectoFinal\\ProyectoFinal\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ProyectoFinal.bundle.scp.css",
+      "PackagePath": "staticwebassets\\ProyectoFinal.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\jg194\\source\\repos\\ProyectoFinal\\ProyectoFinal\\ProyectoFinal\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\jg194\\source\\repos\\ProyectoFinal\\ProyectoFinal\\ProyectoFinal\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\jg194\\source\\repos\\ProyectoFinal\\ProyectoFinal\\ProyectoFinal\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\jg194\\source\\repos\\ProyectoFinal\\ProyectoFinal\\ProyectoFinal\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ProyectoFinal.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.ProyectoFinal.props",
+      "PackagePath": "build\\ProyectoFinal.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.ProyectoFinal.props",
+      "PackagePath": "buildMultiTargeting\\ProyectoFinal.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.ProyectoFinal.props",
+      "PackagePath": "buildTransitive\\ProyectoFinal.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

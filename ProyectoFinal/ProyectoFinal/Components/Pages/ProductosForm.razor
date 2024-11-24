@@ -1,0 +1,112 @@
+﻿@page "/productos/nueva"
+@page "/productos/editar/{Id:int}"
+@rendermode InteractiveServer
+@inject NavigationManager _navigator;
+@inject IRepositorioProductos _repositorio;
+<h2>@_mensaje Producto</h2>
+<EditForm Model="_producto" FormName="frmProducto" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="row mb-3">  
+        <label for="txtNombre" class="form-label">Nombre</label>
+        <div class="col-10">
+            <InputText id="txtNombre" class="form-control" @bind-Value="_producto.Nombre"/>
+            <ValidationMessage For="()=>_producto.Nombre"/>
+        </div>
+    </div>
+
+    <div class="row mb-3">  
+        <label for="txtTipo" class="form-label">Tipo</label>
+        <div class="col-10">
+            <InputText id="txtTipo" class="form-control" @bind-Value="_producto.Tipo"/>
+            <ValidationMessage For="()=>_producto.Tipo"/>
+        </div>
+    </div>
+
+    <div class="row mb-3">  
+        <label for="txtStock" class="form-label">Stock</label>
+        <div class="col-10">
+            <InputNumber id="txtStock" class="form-control" @bind-Value="_producto.Stock"/>
+            <ValidationMessage For="()=>_producto.Stock"/>
+        </div>
+    </div>
+
+    <div class="row mb-3">  
+        <label for="txtUnidad" class="form-label">Unidad</label>
+        <div class="col-10">
+            <InputText id="txtUnidad" class="form-control" @bind-Value="_producto.Unidad"/>
+            <ValidationMessage For="()=>_producto.Unidad"/>
+        </div>
+    </div>
+
+    <div class="row mb-3">  
+        <label for="txtPedidos" class="form-label">Pedidos</label>
+        <div class="col-10">
+            <InputSelect class="form-select" @bind-Value="_producto.PedidosId ">
+                <option value="0" enabled="enabled">Seleccion pedidos...</option>
+                @foreach (Pedido pedido in _pedidos)
+                {
+                    <option value="@pedido.Id">@pedido.Nombre</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="()=>_producto.PedidosId"/>
+        </div>
+    </div>
+
+    <div class="row mb-3">  
+        <label for="txtCategorias" class="form-label">Categorias</label>
+        <div class="col-10">
+            <InputSelect class="form-select" @bind-Value="_categoriasSeleccionadas" multiple size="3">
+                @foreach (Categoria categoria in _categorias)
+                {
+                    <option value="@categoria.Id">@categoria.Nombre</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <button class="btn btn-danger ms-3" @onclick="Cancelar" @onclick:preventDefault>Cancelar</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private string _mensaje = "";
+    private Producto? _producto = new();
+    private List<Pedido> _pedidos = new();
+    private List<Categoria> _categorias = new();
+    private int[] _categoriasSeleccionadas = new int[] { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _pedidos = await _repositorio.GetPedidos();
+        _categorias = await _repositorio.GetCategorias();
+        if (Id > 0)
+        {
+            _producto = await _repositorio.Get(Id);
+            _mensaje = "Modificar";
+        }
+        else
+        {
+            _mensaje = "Nueva";
+        }
+    }
+
+    private async void Guardar()
+    {
+        if (Id > 0)
+        {
+            await _repositorio.Update(Id, _producto!);
+        }
+        else
+        {
+            await _repositorio.Add(_producto!);
+        }
+        Cancelar();
+    }
+
+    private void Cancelar()
+    {
+        _navigator.NavigateTo("/productos");
+    }
+}
