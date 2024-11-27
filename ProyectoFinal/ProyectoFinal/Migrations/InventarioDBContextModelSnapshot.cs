@@ -21,19 +21,19 @@ namespace ProyectoFinal.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CategoriaProducto", b =>
+            modelBuilder.Entity("PedidoProducto", b =>
                 {
-                    b.Property<int>("CategoriasId")
+                    b.Property<int>("PedidosId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductosId")
                         .HasColumnType("int");
 
-                    b.HasKey("CategoriasId", "ProductosId");
+                    b.HasKey("PedidosId", "ProductosId");
 
                     b.HasIndex("ProductosId");
 
-                    b.ToTable("CategoriaProducto");
+                    b.ToTable("productoPedido", (string)null);
                 });
 
             modelBuilder.Entity("ProyectoFinal.Modelos.Categoria", b =>
@@ -76,24 +76,19 @@ namespace ProyectoFinal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("PedidoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PedidosId")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("Precio")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("Stock")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Unidad")
                         .IsRequired()
@@ -102,16 +97,16 @@ namespace ProyectoFinal.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PedidoId");
+                    b.HasIndex("CategoriaId");
 
                     b.ToTable("Productos");
                 });
 
-            modelBuilder.Entity("CategoriaProducto", b =>
+            modelBuilder.Entity("PedidoProducto", b =>
                 {
-                    b.HasOne("ProyectoFinal.Modelos.Categoria", null)
+                    b.HasOne("ProyectoFinal.Modelos.Pedido", null)
                         .WithMany()
-                        .HasForeignKey("CategoriasId")
+                        .HasForeignKey("PedidosId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -124,14 +119,16 @@ namespace ProyectoFinal.Migrations
 
             modelBuilder.Entity("ProyectoFinal.Modelos.Producto", b =>
                 {
-                    b.HasOne("ProyectoFinal.Modelos.Pedido", "Pedido")
+                    b.HasOne("ProyectoFinal.Modelos.Categoria", "Categoria")
                         .WithMany("Productos")
-                        .HasForeignKey("PedidoId");
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("Pedido");
+                    b.Navigation("Categoria");
                 });
 
-            modelBuilder.Entity("ProyectoFinal.Modelos.Pedido", b =>
+            modelBuilder.Entity("ProyectoFinal.Modelos.Categoria", b =>
                 {
                     b.Navigation("Productos");
                 });

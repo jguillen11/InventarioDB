@@ -1,0 +1,80 @@
+﻿@page "/pedidos/nueva"
+@page "/pedidos/editar/{Id:int}"
+@rendermode InteractiveServer
+@inject NavigationManager _navigator;
+@inject IRepositorioProductos _repositorioProductos;
+@inject IRepositorioPedidos _repositorioPedidos;
+<h2>@_mensaje Pedido</h2>
+<EditForm Model="_pedido" FormName="frmPedido" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="row mb-3">
+        <label for="txtNombre" class="form-label">Nombre</label>
+        <div class="col-10">
+            <InputText id="txtNombre" class="form-control" @bind-Value="_pedido.Nombre" />
+            <ValidationMessage For="()=>_pedido.Nombre" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="txtProductos" class="form-label">Productos</label>
+        <div class="col-10">
+            <InputSelect class="form-select" @bind-Value="_productosSeleccionados" multiple size="5">
+                @foreach (Producto producto in _productos)
+                {
+                    <option value="@producto.Id">@producto.Nombre</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="()=>_pedido.Productos"/>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <button class="btn btn-danger ms-3" @onclick="Cancelar" @onclick:preventDefault>Cancelar</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private string _mensaje = "";
+    private Pedido? _pedido = new();
+    private List<Producto> _productos = new();
+    private int[] _productosSeleccionados = new int[] { };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _productos = await _repositorioProductos.GetAll();
+
+        if (Id > 0)
+        {
+            _pedido = await _repositorioPedidos.Get(Id);
+            _mensaje = "Modificar";
+            _productosSeleccionados = _pedido.Productos.Select(p => p.Id).ToArray();
+
+
+        }
+        else
+        {
+            _mensaje = "Nueva";
+        }
+    }
+
+    private async void Guardar()
+    {
+        _pedido.Productos = _productos.Where(p => _productosSeleccionados.Contains(p.Id)).ToList();    
+        if (Id > 0)
+        {
+            await _repositorioPedidos.Update(Id, _pedido!);
+        }
+        else
+        {
+            await _repositorioPedidos.Add(_pedido!);
+        }
+        Cancelar();
+    }
+
+    private void Cancelar()
+    {
+        _navigator.NavigateTo("/productos");
+    }
+}

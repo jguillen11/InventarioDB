@@ -2,6 +2,8 @@
 @rendermode InteractiveServer
 @inject NavigationManager _navigator;
 @inject IRepositorioProductos _repositorio;
+@inject IRepositorioPedidos _repositorioPedidos;
+@inject IRepositorioCategorias _repositorioCategorias;
 <h3>Productos</h3>
 <a class="btn btn-success" href="productos/nueva">Agregar producto</a>
 @if (_productos == null)
@@ -20,9 +22,10 @@ else
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Tipo</th>
+                <th>Precio</th>
                 <th>Stock</th>
                 <th>Unidad</th>
+                <th>Categoria</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -31,9 +34,10 @@ else
             {
                 <tr>
                     <td>@producto.Nombre</td>
-                    <td>@producto.Tipo</td>
+                    <td>@producto.Precio</td>
                     <td>@producto.Stock</td>
                     <td>@producto.Unidad</td>
+                    <td>@producto.Categoria?.Nombre</td>
                     <td>
                         <button class="btn btn-primary" title="Modificar" @onclick="()=>Modificar(producto.Id)" >Modificar</button>
                         <button class="btn btn-danger" title="Eliminar" @onclick="() =>Eliminar(producto)">Eliminar</button>
@@ -45,13 +49,95 @@ else
     </table>
 }
 
+<h3>Pedidos</h3>
+<a class="btn btn-success" href="pedidos/nueva">Agregar pedido</a>
+@if (_pedidos == null)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+}
+else if (_pedidos.Count == 0)
+{
+    <h3>No existen pedidos registrados</h3>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Productos</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Pedido pedido in _pedidos)
+            {
+                <tr>
+                    <td>@pedido.Nombre</td>
+                    <td>@string.Join(",",pedido.Productos.Select(p => p.Nombre))</td>
+                    <td>
+                        <button class="btn btn-primary" title="Modificar" @onclick="()=>ModificarPedido(pedido.Id)">Modificar</button>
+                        <button class="btn btn-danger" title="Eliminar" @onclick="() =>EliminarPedido(pedido)">Eliminar</button>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+    <h3>Categorias</h3>
+    <a class="btn btn-success" href="categorias/nueva">Agregar categoria</a>
+    @if (_categorias == null)
+    {
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    }
+    else if (_categorias.Count == 0)
+    {
+        <h3>No existen categorias registradas</h3>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Productos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Categoria categoria in _categorias)
+                {
+                    <tr>
+                        <td>@categoria.Nombre</td>
+                        <td>@string.Join(",", categoria.Productos.Select(p => p.Nombre))</td>
+                        <td>
+                            <button class="btn btn-primary" title="Modificar" @onclick="()=>ModificarCategoria(categoria.Id)">Modificar</button>
+                            <button class="btn btn-danger" title="Eliminar" @onclick="() =>EliminarCategoria(categoria)">Eliminar</button>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+}
+
 
 @code {
     private List<Producto>? _productos;
+    private List<Pedido>? _pedidos;
+    private List<Categoria>? _categorias;
+
 
     protected override async Task OnInitializedAsync()
     {
         _productos = await _repositorio.GetAll();
+        _pedidos = await _repositorioPedidos.GetAll();
+        _categorias = await _repositorioCategorias.GetAll();
     }
 
     private async void Eliminar(Producto producto)
@@ -64,5 +150,29 @@ else
     private void Modificar(int id)
     {
         _navigator.NavigateTo($"/productos/editar/{id}");
+    }
+
+    private async void EliminarPedido(Pedido pedido)
+    {
+        await _repositorioPedidos.Delete(pedido.Id);
+        _pedidos!.Remove(pedido);
+        StateHasChanged();
+    }
+
+    private void ModificarPedido(int id)
+    {
+        _navigator.NavigateTo($"/pedidos/editar/{id}");
+    }
+
+    private async void EliminarCategoria(Categoria categoria)
+    {
+        await _repositorioCategorias.Delete(categoria.Id);
+        _categorias!.Remove(categoria);
+        StateHasChanged();
+    }
+
+    private void ModificarCategoria(int id)
+    {
+        _navigator.NavigateTo($"/categorias/editar/{id}");
     }
 }

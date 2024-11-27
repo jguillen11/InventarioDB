@@ -30,7 +30,9 @@ namespace ProyectoFinal.Repositorio
         }
         public async Task<List<Producto>> GetAll()
         {
-            return await _context.Productos.ToListAsync();
+            return await _context.Productos
+                .Include(p => p.Categoria)
+                .ToListAsync();
         }
 
         public async Task<List<Pedido>> GetPedidos()
@@ -48,7 +50,7 @@ namespace ProyectoFinal.Repositorio
             if (productoactual != null)
             {
                 productoactual.Nombre = producto.Nombre;
-                productoactual.Tipo = producto.Tipo;
+                productoactual.Precio = producto.Precio;
                 productoactual.Stock = producto.Stock;
                 productoactual.Unidad = producto.Unidad;
                 await _context.SaveChangesAsync();
